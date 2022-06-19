@@ -1,0 +1,27 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 4rem 0 1.5rem;
+}
+
+.container > p {
+  color: var(--blue);
+  font-weight: 700;
+  font-size: 0.875rem;
+}
+
+.container > p > span {
+  margin-left: 0.5rem;
+  padding: 0.125rem 0.5rem;
+  background: var(--gray-400);
+  color: var(--gray-100);
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: 1rem;  
+}
+
+.container > p.completedTasks {
+  color: var(--purple);  
+}

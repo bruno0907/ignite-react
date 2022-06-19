@@ -1,0 +1,80 @@
+.container {
+  width: 100%;
+  display: flex;  
+  align-items: flex-start;  
+  justify-content: flex-start;
+  gap: 0.5rem;  
+}
+
+.container > div {  
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.container > div > input {  
+  flex: 1;
+  padding: 1.055rem;
+  background: var(--gray-500);  
+  border: solid 1px var(--gray-700);
+  border-radius: 0.5rem;
+  color: var(--gray-100);
+  outline: none;
+  transition: border 150ms;
+}
+
+.container > div > input:placeholder {
+  color: var(--gray-300)
+}
+
+.container > div > input:hover {
+  border-color: var(--blue-dark);
+}
+
+.container > div > input:focus {  
+  border-color: var(--purple-dark);
+}
+
+.container > div > span {
+  padding: 0.5rem;
+  color: var(--danger);
+  transition: all 150ms;
+}
+
+.container > button {    
+  background: var(--blue-dark);
+  color: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 1.175rem;
+  font-size: 0.875rem;  
+  transition: background 150ms;
+  cursor: pointer;
+}
+
+.container > button:hover {
+  background: var(--blue);  
+}
+
+.container > button:active {
+  opacity: .8;
+}
+
+@media(max-width: 31rem) {
+  .container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .container > div {
+    width: 100%;
+  }
+
+  .container > button {
+    width: 100%;
+  }
+}

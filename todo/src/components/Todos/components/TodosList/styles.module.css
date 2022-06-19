@@ -1,0 +1,89 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  list-style: none;
+  margin-bottom: 5rem;  
+}
+
+.todoItem {    
+  display: flex;    
+  padding: 1rem;
+  gap: 1.3rem;
+  background: var(--gray-500);
+  color: var(--gray-100);
+  border: solid 1px var(--gray-400);
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06); 
+}
+
+.todoItem > p {   
+  min-width: 10rem;
+  flex: 1;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  hyphens: auto;  
+  font-size: 0.875rem;   
+}
+
+.todoItem > p.isCompleted {
+  text-decoration-line: line-through;
+}
+
+.completeTodoBtn {
+  width: 1.09rem;
+  height: 1.09rem;
+  border: solid 1px var(--blue);
+  border-radius: 3rem;
+  background: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 150ms;
+}
+
+.completeTodoBtn:hover {
+  background: var(--blue-dark-opacity);
+}
+
+.completedTodoBtn {
+  width: 1.09rem;
+  height: 1.09rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: solid 1px var(--purple-dark);
+  background: var(--purple-dark);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 150ms;
+}
+
+.completedTodoBtn > img {
+  margin-top: 0.125rem;
+  margin-right: 0.020rem;
+}
+
+.completedTodoBtn:hover {
+  filter: brightness(150%)
+}
+
+.removeTodoBtn {  
+  background: none;  
+  border: none;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 150ms;
+}
+
+.removeTodoBtn:hover {
+  background: var(--gray-400);  
+}
+
+.removeTodoBtn:hover > svg > path {
+  fill: var(--danger);
+}
