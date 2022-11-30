@@ -1,13 +1,15 @@
-import { ThemeProvider } from 'styled-components'
-import { ButtonContainer } from './components/Button/styles'
-import { GlobalStyles } from './styles/globalStyles'
-import { defaultTheme } from './styles/themes/default'
+import { BrowserRouter } from "react-router-dom"
+import { ThemeProvider } from "styled-components"
+import { Router } from "./Router"
+import { GlobalStyles } from "./styles/globalStyles"
+import { defaultTheme } from "./styles/themes/default"
 
 function App() {
   return (
     <ThemeProvider theme={defaultTheme}>
-      <p>Hello</p>
-      <ButtonContainer>Click me!</ButtonContainer>
+      <BrowserRouter>
+        <Router />
+      </BrowserRouter>
       <GlobalStyles />
     </ThemeProvider>
   )
