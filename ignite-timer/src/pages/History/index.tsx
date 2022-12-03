@@ -1,6 +1,10 @@
+import { formatDistanceToNow } from "date-fns";
+import ptBR from "date-fns/locale/pt-BR"
+import { useCycles } from "../../hooks/useCycles";
 import { HistoryContainer, HistoryListWrapper, Status } from "./styles"
 
 export const History = () => {
+  const { cycles } = useCycles()
   return (
     <HistoryContainer>
       <h1>Meu histórico</h1>
@@ -16,30 +20,24 @@ export const History = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Descrição da tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status taskStatus="ongoing">Em andamento</Status>                
-              </td>
-            </tr>
-            <tr>
-              <td>Descrição da tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status taskStatus="done">Concluído</Status>                
-              </td>
-            </tr>
-            <tr>
-              <td>Descrição da tarefa</td>
-              <td>20 minutos</td>
-              <td>Há 2 meses</td>
-              <td>
-                <Status taskStatus="stopped">Interrompido</Status>
-              </td>
-            </tr>
+            {cycles.map(cycle => {
+              return (
+                <tr key={cycle.id}>
+                  <td>{cycle.task}</td>
+                  <td>{cycle.minutesAmount} minutos</td>
+                  <td>{formatDistanceToNow(cycle.startedAt, {
+                    addSuffix: true,
+                    locale: ptBR
+                  })}</td>
+                  <td>
+                    {cycle.finishedAt && <Status taskStatus="done">Concluído</Status>}
+                    {cycle.interruptedAt && <Status taskStatus="stopped">Interrompido</Status>}
+                    {(!cycle.interruptedAt && !cycle.finishedAt) && <Status taskStatus="ongoing">Em Andamento</Status>}
+                  </td>
+                </tr>
+
+              )
+            })}            
           </tbody>
         </table>
       </HistoryListWrapper>

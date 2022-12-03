@@ -19,6 +19,7 @@ interface CyclesContext {
   activeCycleId: string | null;
   amountSecondsPassed: number;
   totalSeconds: number;
+  cycles: Cycle[];
   markCurrentCycleAsFinished: () => void;
   createNewCycle: (data: NewCycleData) => void;
   interruptCycle: () => void;
@@ -85,7 +86,8 @@ export const CyclesProvider = ({ children }: CyclesProvider) => {
        totalSeconds,
        createNewCycle,
        interruptCycle,
-       setAmountSecondsPassed       
+       setAmountSecondsPassed,
+       cycles       
     }}>
       {children}
     </CyclesContext.Provider>
