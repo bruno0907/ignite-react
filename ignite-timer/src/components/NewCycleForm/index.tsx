@@ -1,11 +1,11 @@
+import { useFormContext } from "react-hook-form"
+import { useCycles } from "../../hooks/useCycles"
+
 import { FormContainer, TaskInput, MinutesAmountInput } from "./styles"
 
-type NewCycleFormProps = {
-  activeCycle: boolean; 
-  register: any 
-}
-
-export const NewCycleForm = ({ activeCycle, register }: NewCycleFormProps) => {
+export const NewCycleForm = () => {
+  const { activeCycle } = useCycles()
+  const { register } = useFormContext()
   return (
     <FormContainer>
       <label htmlFor="task">Vou trabalhar em</label>
@@ -14,7 +14,7 @@ export const NewCycleForm = ({ activeCycle, register }: NewCycleFormProps) => {
         type="text"
         placeholder="Dê um nome para o seu projeto"
         list="task-suggestions"
-        disabled={activeCycle}
+        disabled={!!activeCycle}
         {...register('task')}
       />
 
@@ -30,9 +30,9 @@ export const NewCycleForm = ({ activeCycle, register }: NewCycleFormProps) => {
         type="number"
         placeholder="00"
         step={5}
-        min={1}
+        min={5}
         max={60}
-        disabled={activeCycle}
+        disabled={!!activeCycle}
         {...register('minutesAmount', { valueAsNumber: true })}
       />
 
