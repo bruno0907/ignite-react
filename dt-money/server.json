@@ -39,6 +39,14 @@
       "category": "Jogo",
       "amount": 1000,
       "createdAt": "2022-07-31T19:30:44.505Z"
+    },
+    {
+      "description": "Teste",
+      "amount": 12345,
+      "type": "income",
+      "category": "Teste",
+      "createdAt": "2022-12-11T02:41:46.275Z",
+      "id": 6
     }
   ]
 }

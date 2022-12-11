@@ -3,6 +3,7 @@ import { ArrowCircleDown, ArrowCircleUp, X } from "phosphor-react";
 import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from 'react-hook-form';
 import * as zod from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTransactions } from '../../contexts/Transactions';
 
 import { CloseButton, Content, Overlay, TransactionType, TransactionTypeButton } from './styles'
 
@@ -13,10 +14,12 @@ const newTransactionSchema = zod.object({
   type: zod.enum(['income', 'outcome'])
 })
 
-type NewTransaction = zod.infer<typeof newTransactionSchema>
+type NewTransactionForm = zod.infer<typeof newTransactionSchema>
 
 export const NewTransactionModal = () => {  
-  const { register, handleSubmit, formState, control } = useForm<NewTransaction>({
+  const { createTransaction } = useTransactions()
+
+  const { register, handleSubmit, formState, control, reset } = useForm<NewTransactionForm>({
     resolver: zodResolver(newTransactionSchema),
     defaultValues: {
       type: 'income'
@@ -25,12 +28,26 @@ export const NewTransactionModal = () => {
 
   const { isSubmitting } = formState
 
-  const handleNewTransaction: SubmitHandler<NewTransaction> = value => {
+  const handleNewTransaction: SubmitHandler<NewTransactionForm> = async value => {
+    const {
+      description,
+      amount,
+      type,
+      category
+    } = value
 
-    console.log(value)
+    await createTransaction({
+      description,
+      amount,
+      type,
+      category      
+    })        
+
+    reset()
+    
   }  
 
-  const handleNewTransactionErrors: SubmitErrorHandler<NewTransaction> = errors => console.log(errors)
+  const handleNewTransactionErrors: SubmitErrorHandler<NewTransactionForm> = errors => console.log(errors)
 
   return (
     <Dialog.Portal>
