@@ -2,31 +2,12 @@ import { useEffect, useState } from "react";
 import { Header } from "../../components/Header"
 import { SearchForm } from "../../components/SearchForm";
 import { Summary } from "../../components/Summary"
+import { useTransactions } from "../../contexts/Transactions";
 
 import { PriceHighlight, TransactionsContainer, TransactionsTable } from "./styles";
 
-interface Transaction {
-  id: string;
-  description: string
-  type: 'income' | 'outcome';
-  category: string;
-  price: number;
-  createdAt: string;
-}
-
 export const TransactionsPage = () => {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-
-  const fetchTransactions = async () => {
-    const response = await fetch('http://localhost:3333/transactions')
-    const data = await response.json()
-    setTransactions(data)
-  }
-
-  useEffect(() => {
-    fetchTransactions()
-
-  }, [])
+  const { transactions } = useTransactions()
 
   return (
     <div>
