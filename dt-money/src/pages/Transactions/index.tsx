@@ -3,6 +3,7 @@ import { Header } from "../../components/Header"
 import { SearchForm } from "../../components/SearchForm";
 import { Summary } from "../../components/Summary"
 import { useTransactions } from "../../contexts/Transactions";
+import { currencyFormatter, dateFormatter } from "../../utils/formatter";
 
 import { PriceHighlight, TransactionsContainer, TransactionsTable } from "./styles";
 
@@ -23,11 +24,12 @@ export const TransactionsPage = () => {
                   <td width="50%">{transaction.description}</td>
                   <td>
                     <PriceHighlight variant={transaction.type}>
-                      {transaction.price}
+                      {transaction.type === 'outcome' ? '- ' : '+ '}
+                      {currencyFormatter.format(transaction.amount)}
                     </PriceHighlight>
                   </td>
                   <td>{transaction.category}</td>
-                  <td>{transaction.createdAt}</td>
+                  <td>{dateFormatter.format(new Date(transaction.createdAt))}</td>
                 </tr>
               )
             })}            
