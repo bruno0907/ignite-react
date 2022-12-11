@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
 import { Header } from "../../components/Header"
 import { SearchForm } from "../../components/SearchForm";
 import { Summary } from "../../components/Summary"
-import { useTransactions } from "../../contexts/Transactions";
+import { useContextSelector } from 'use-context-selector'
 import { currencyFormatter, dateFormatter } from "../../utils/formatter";
 
 import { PriceHighlight, TransactionsContainer, TransactionsTable } from "./styles";
+import { TransactionsContext } from "../../contexts/Transactions";
 
-export const TransactionsPage = () => {
-  const { transactions } = useTransactions()
+export const TransactionsPage = () => {  
+  const transactions = useContextSelector(TransactionsContext, ctx => ctx.transactions)
 
   return (
     <div>

@@ -3,9 +3,10 @@ import { ArrowCircleDown, ArrowCircleUp, X } from "phosphor-react";
 import { useForm, SubmitHandler, SubmitErrorHandler, Controller } from 'react-hook-form';
 import * as zod from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useTransactions } from '../../contexts/Transactions';
+import { useContextSelector } from 'use-context-selector'
 
 import { CloseButton, Content, Overlay, TransactionType, TransactionTypeButton } from './styles'
+import { TransactionsContext } from '../../contexts/Transactions';
 
 const newTransactionSchema = zod.object({
   description: zod.string(),
@@ -16,8 +17,8 @@ const newTransactionSchema = zod.object({
 
 type NewTransactionForm = zod.infer<typeof newTransactionSchema>
 
-export const NewTransactionModal = () => {  
-  const { createTransaction } = useTransactions()
+export const NewTransactionModal = () => {
+  const createTransaction = useContextSelector(TransactionsContext, ctx => ctx.createTransaction)
 
   const { register, handleSubmit, formState, control, reset } = useForm<NewTransactionForm>({
     resolver: zodResolver(newTransactionSchema),
