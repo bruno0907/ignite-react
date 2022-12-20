@@ -1,20 +1,26 @@
 import type { AppProps } from 'next/app'
-
-import { Roboto } from '@next/font/google'
 import Head from 'next/head'
+import Image from 'next/image'
 
-const roboto = Roboto({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-})
+import logo from '../assets/logo.svg'
+
+import { globalStyles } from '../styles/global'
+import { Container, Header } from '../styles/pages/app'
+
+globalStyles()
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <main className={roboto.className}>
+    <>
       <Head>
         <title>Ignite Shop</title>
       </Head>
-      <Component {...pageProps} />
-    </main>
+      <Container>      
+        <Header>          
+          <Image src={logo} alt="" />
+        </Header>
+        <Component {...pageProps} />      
+      </Container>
+    </>
   )
 }
