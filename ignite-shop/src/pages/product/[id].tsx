@@ -1,22 +1,52 @@
+import axios from "axios"
 import { GetStaticPaths, GetStaticProps } from "next"
 import Image from "next/image"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import Stripe from "stripe"
-import { ProductProps } from ".."
 import { stripe } from "../../lib/stripe"
 import { ImageContainer, ProductContainer, ProductDetails } from "../../styles/pages/product"
 
 interface ProductPageProps {
-  product: ProductProps 
+  product: {
+    id: string; 
+    isActive: true,  
+    price: string;
+    defaultPriceId: string;
+    description: string;
+    imageUrl: string;
+    name: string;  
+    createdAt: Date;
+    updatedAt: Date;  
+  } 
 }
 
 
 
 export default function Product({ product }: ProductPageProps) { 
+  const [isCreatingCheckoutSession, setIsCreatingCheckoutSession] = useState(false)
 
-  const { isFallback } = useRouter()
+  const router = useRouter()
 
-  if(isFallback) {
+  async function handleBuyProduct() {
+    try {
+      setIsCreatingCheckoutSession(true)
+      const response = await axios.post('/api/checkout', {      
+        priceId: product.defaultPriceId      
+      })
+
+      const { checkoutSessionUrl } = response.data
+
+      router.push(checkoutSessionUrl)
+      
+    } catch (error) {
+      setIsCreatingCheckoutSession(false)
+      alert('Erro ao realizar a compra')
+
+    }
+  }
+
+  if(router.isFallback) {
     return (
       <p>Carregando...</p>
     )
@@ -34,8 +64,11 @@ export default function Product({ product }: ProductPageProps) {
 
         <p>{product.description}</p>
 
-        <button>
-          Comprar agora
+        <button
+          onClick={handleBuyProduct}
+          disabled={isCreatingCheckoutSession}
+        >
+          {isCreatingCheckoutSession ? 'Comprando...' : 'Comprar agora'}          
         </button>
       </ProductDetails>
     </ProductContainer>
@@ -66,6 +99,7 @@ export const getStaticProps: GetStaticProps<any, { id: string }> = async ({ para
       style: 'currency',
       currency: 'BRL'
     }).format(price.unit_amount! / 100),
+    defaultPriceId: price.id,
     createdAt: response.created,
     updatedAt: response.updated
   }

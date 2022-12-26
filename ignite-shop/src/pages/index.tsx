@@ -9,18 +9,16 @@ import { HomeContainer, Product } from "../styles/pages/home"
 import Link from "next/link"
 
 interface HomeProps {
-  products: ProductProps[]
-}
-
-export interface ProductProps {
-  id: string; 
-  isActive: true,  
-  price: string;
-  description: string;
-  imageUrl: string;
-  name: string;  
-  createdAt: Date;
-  updatedAt: Date;  
+  products: {
+    id: string; 
+    isActive: true,  
+    price: string;
+    description: string;
+    imageUrl: string;
+    name: string;  
+    createdAt: Date;
+    updatedAt: Date;  
+  }[]
 }
 
 export default function Home({ products }: HomeProps) {
