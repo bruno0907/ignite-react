@@ -26,6 +26,6 @@
   },
   "scripts": {
     "dev": "set NODE_OPTIONS=--openssl-legacy-provider && start-storybook -p 6006",
-    "build": "build-storybook"
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && build-storybook"
   }
 }
