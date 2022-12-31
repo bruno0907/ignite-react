@@ -1,0 +1,20 @@
+import { Meta, ColorPalette, ColorItem } from '@storybook/addon-docs';
+import { colors } from '@ignite-ui/tokens'
+
+export function ColorsGrid() {
+return (
+  <ColorPalette>
+    {Object.entries(colors).map(([ key, color ]) => {
+      return (
+        <ColorItem
+          key={key}
+          title={key}        
+          colors={{
+            [key]: color
+          }}
+        />
+      )
+    })}
+  </ColorPalette>
+)
+}
