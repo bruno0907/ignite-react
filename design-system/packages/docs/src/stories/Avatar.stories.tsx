@@ -7,6 +7,13 @@ export default {
   args: {
     src: 'https://avatars.githubusercontent.com/u/54812906?v=4',
     alt: 'Bruno Mariani'
+  },
+  argTypes: {
+    src: {
+      control: {
+        type: 'text'
+      }
+    }
   }
 } as Meta<AvatarProps>
 

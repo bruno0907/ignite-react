@@ -7,7 +7,31 @@ export default {
   title: 'Form/Button',
   component: Button,
   args: {
-    children: 'Click Me!'    
+    children: 'Click Me!',
+    variant: 'primary',
+    size: 'md'
+  },
+  argTypes: {
+    onClick: {
+      actions: 'clicked',
+    },
+    variant: {
+      options: ['primary', 'secondary', 'tertiary'],
+      control: {
+        type: 'inline-radio'
+      }
+    },
+    size: {
+      options: ['md', 'sm'],
+      control: {
+        type: 'inline-radio'
+      }
+    },
+    disabled: {      
+      control: {
+        type: 'boolean'
+      }
+    }
   }
 } as Meta<ButtonProps>
 
