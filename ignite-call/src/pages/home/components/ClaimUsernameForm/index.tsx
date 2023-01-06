@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { Button, Text, TextInput } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import * as z from 'zod'
@@ -19,6 +20,8 @@ const claimUsernameFormSchema = z.object({
 type ClaimUsernameProps = z.infer<typeof claimUsernameFormSchema>
 
 export function ClaimUsernameForm() {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -27,9 +30,21 @@ export function ClaimUsernameForm() {
     resolver: zodResolver(claimUsernameFormSchema),
   })
 
-  async function handleClaimUsernameSubmit(value: ClaimUsernameProps) {
+  async function handleClaimUsernameSubmit(data: ClaimUsernameProps) {
+    const { username } = data
     return new Promise((resolve, reject) => {
-      resolve(setTimeout(() => console.log({ value }), 1250))
+      resolve(
+        setTimeout(
+          () =>
+            router.push({
+              pathname: '/register',
+              query: {
+                username,
+              },
+            }),
+          1250,
+        ),
+      )
     })
   }
 
