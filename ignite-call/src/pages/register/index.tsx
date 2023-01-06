@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Container, Form, FormError, Header } from './styles'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
+import { api } from '../../lib/axios'
+import { AxiosError } from 'axios'
 
 const registerFormSchema = z.object({
   username: z
@@ -31,19 +33,25 @@ export default function Register() {
     register,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormSchemaProps>({
     resolver: zodResolver(registerFormSchema),
   })
 
-  async function handleSubmitRegister(values: RegisterFormSchemaProps) {
-    console.log({ values })
+  async function handleSubmitRegister(data: RegisterFormSchemaProps) {
+    try {
+      await api.post('/users', {
+        username: data.username,
+        fullname: data.fullname,
+      })
+    } catch (e) {
+      if (e instanceof AxiosError && e?.response?.data.message) {
+        setError('username', { message: 'O nome de usuário já está em uso!' })
+      }
+      console.log({ e })
+    }
   }
-
-  async function handleRegisterErrors(error: any) {
-    console.log({ error })
-  }
-
   useEffect(() => {
     if (query?.username) {
       setValue('username', String(query.username))
@@ -59,10 +67,7 @@ export default function Register() {
         </Text>
         <MultiStep size={4} currentStep={1} />
       </Header>
-      <Form
-        as="form"
-        onSubmit={handleSubmit(handleSubmitRegister, handleRegisterErrors)}
-      >
+      <Form as="form" onSubmit={handleSubmit(handleSubmitRegister)}>
         <label>
           <Text size="sm">Nome de usuário</Text>
           <TextInput
@@ -77,8 +82,8 @@ export default function Register() {
         <label>
           <Text size="sm">Nome completo</Text>
           <TextInput placeholder="Seu nome" {...register('fullname')} />
-          {errors.username && (
-            <FormError size="sm">{errors.username?.message}</FormError>
+          {errors.fullname && (
+            <FormError size="sm">{errors.fullname?.message}</FormError>
           )}
         </label>
         <Button type="submit" disabled={isSubmitting}>
