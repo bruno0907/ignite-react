@@ -27,7 +27,7 @@ const registerFormSchema = z.object({
 type RegisterFormSchemaProps = z.infer<typeof registerFormSchema>
 
 export default function Register() {
-  const { query } = useRouter()
+  const router = useRouter()
 
   const {
     register,
@@ -45,6 +45,7 @@ export default function Register() {
         username: data.username,
         fullname: data.fullname,
       })
+      await router.push('/register/connect-calendar')
     } catch (e) {
       if (e instanceof AxiosError && e?.response?.data.message) {
         setError('username', { message: 'O nome de usuário já está em uso!' })
@@ -52,11 +53,13 @@ export default function Register() {
       console.log({ e })
     }
   }
+
   useEffect(() => {
-    if (query?.username) {
-      setValue('username', String(query.username))
+    if (router.query?.username) {
+      setValue('username', String(router.query.username))
     }
-  }, [query?.username, setValue])
+  }, [router.query?.username, setValue])
+
   return (
     <Container>
       <Header>
