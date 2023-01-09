@@ -25,7 +25,7 @@ export default async function handler(
     },
   })
 
-  setCookie({ res }, '@igniteCall:userId', user.id, {
+  setCookie({ res }, '@igniteCall:UserId', user.id, {
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',
   })

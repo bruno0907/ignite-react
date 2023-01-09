@@ -5,7 +5,8 @@ declare module 'next-auth' {
     id: string
     fullname: string
     email: string
-    username: strigng
+    username: string
     avatar_url: string
+    updated_at?: Date | null
   }
 }
