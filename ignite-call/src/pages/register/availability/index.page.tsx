@@ -16,27 +16,44 @@ import {
   AvailabilityDay,
   AvailabilityInputs,
   AvailabilityItem,
+  FormErrors,
 } from './styles'
 import { Container, Header } from '../styles'
-import { useForm, useFieldArray } from 'react-hook-form'
-import * as z from 'zod'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getWeekDays } from '../../../utils/get-week-days'
 
-const availabilityFormSchema = z.object({})
+const intervalFormSchema = z.object({
+  intervals: z
+    .array(
+      z.object({
+        weekDay: z.number().min(0).max(6),
+        enabled: z.boolean(),
+        startTime: z.string(),
+        endTime: z.string(),
+      }),
+    )
+    .length(7)
+    .transform((intervals) => intervals.filter((interval) => interval.enabled))
+    .refine((intervals) => intervals.length, {
+      message: 'Você precisa selecionar pelo menos um dia da semana!',
+    }),
+})
 
-type AvailabilityFormProps = z.infer<typeof availabilityFormSchema>
+type IntervalFormProps = z.infer<typeof intervalFormSchema>
 
 export default function Availability() {
   const {
     register,
     handleSubmit,
     control,
-    formState: { isSubmitting },
+    watch,
+    formState: { isSubmitting, errors },
   } = useForm({
-    resolver: zodResolver(availabilityFormSchema),
+    resolver: zodResolver(intervalFormSchema),
     defaultValues: {
-      availability: [
+      intervals: [
         { weekDay: 0, enabled: false, startTime: '08:00', endTime: '17:00' },
         { weekDay: 1, enabled: true, startTime: '07:00', endTime: '16:00' },
         { weekDay: 2, enabled: false, startTime: '09:00', endTime: '18:00' },
@@ -50,17 +67,19 @@ export default function Availability() {
 
   const { fields } = useFieldArray({
     control,
-    name: 'availability',
+    name: 'intervals',
   })
 
   const weekDay = getWeekDays()
 
-  function handleSetAvailability(data: AvailabilityFormProps) {
+  const intervals = watch('intervals')
+
+  function handleSetAvailability(data: IntervalFormProps) {
     console.log({ data })
   }
 
-  function handleSetAvailabilityErrors(error: AvailabilityFormProps) {
-    console.log({ error })
+  function handleErrors() {
+    console.log({ errors })
   }
 
   return (
@@ -79,41 +98,50 @@ export default function Availability() {
         </Header>
         <AvailabilityBox
           as="form"
-          onSubmit={handleSubmit(
-            handleSetAvailability,
-            handleSetAvailabilityErrors,
-          )}
+          onSubmit={handleSubmit(handleSetAvailability, handleErrors)}
         >
           <AvailabilityContainer>
-            {fields.map((availability) => {
+            {fields.map((field, i) => {
               return (
-                <AvailabilityItem key={availability.id}>
+                <AvailabilityItem key={field.id}>
                   <AvailabilityDay>
-                    <Checkbox checked={availability.enabled} />
-                    <Text size="sm">{weekDay[availability.weekDay]}</Text>
+                    <Controller
+                      name={`intervals.${field.weekDay}.enabled`}
+                      control={control}
+                      render={({ field }) => (
+                        <Checkbox
+                          onCheckedChange={(checked) =>
+                            field.onChange(checked === true)
+                          }
+                          checked={field.value}
+                        />
+                      )}
+                    />
+                    <Text size="sm">{weekDay[field.weekDay]}</Text>
                   </AvailabilityDay>
                   <AvailabilityInputs>
                     <TextInput
                       size="sm"
                       type="time"
                       step={60}
-                      {...register(
-                        `availability.${availability.weekDay}.startTime`,
-                      )}
+                      disabled={intervals[i].enabled === false}
+                      {...register(`intervals.${i}.startTime`)}
                     />
                     <TextInput
                       size="sm"
                       type="time"
                       step={60}
-                      {...register(
-                        `availability.${availability.weekDay}.endTime`,
-                      )}
+                      disabled={intervals[i].enabled === false}
+                      {...register(`intervals.${i}.endTime`)}
                     />
                   </AvailabilityInputs>
                 </AvailabilityItem>
               )
             })}
           </AvailabilityContainer>
+          {errors.intervals && (
+            <FormErrors size="sm">{errors.intervals.message}</FormErrors>
+          )}
           <Button disabled={isSubmitting}>
             Próximo Passo
             <ArrowRight />

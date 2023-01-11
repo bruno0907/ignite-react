@@ -1,4 +1,4 @@
-import { Box, styled } from '@ignite-ui/react'
+import { Box, styled, Text } from '@ignite-ui/react'
 
 export const AvailabilityBox = styled(Box, {
   marginTop: '$6',
@@ -41,4 +41,9 @@ export const AvailabilityInputs = styled('div', {
   input: {
     color: '$gray200',
   },
+})
+
+export const FormErrors = styled(Text, {
+  color: '#f75a68',
+  marginBottom: '$4',
 })
