@@ -23,6 +23,7 @@ import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getWeekDays } from '../../../utils/get-week-days'
+import { convertTimeStringToMinutes } from '../../../utils/convert-timeString-to-minutes'
 
 const intervalFormSchema = z.object({
   intervals: z
@@ -38,10 +39,29 @@ const intervalFormSchema = z.object({
     .transform((intervals) => intervals.filter((interval) => interval.enabled))
     .refine((intervals) => intervals.length, {
       message: 'Você precisa selecionar pelo menos um dia da semana!',
-    }),
+    })
+    .transform((intervals) =>
+      intervals.map((interval) => ({
+        weekDay: interval.weekDay,
+        startTimeInMinutes: convertTimeStringToMinutes(interval.startTime),
+        endTimeInMinutes: convertTimeStringToMinutes(interval.endTime),
+      })),
+    )
+    .refine(
+      (intervals) =>
+        intervals.every(
+          (interval) =>
+            interval.endTimeInMinutes - 60 >= interval.startTimeInMinutes,
+        ),
+      {
+        message:
+          'O horário de término deve ser de pelo menos 1h distante do horário de início.',
+      },
+    ),
 })
 
-type IntervalFormProps = z.infer<typeof intervalFormSchema>
+type IntervalFormInput = z.input<typeof intervalFormSchema>
+type IntervalFormOutput = z.output<typeof intervalFormSchema>
 
 export default function Availability() {
   const {
@@ -50,7 +70,7 @@ export default function Availability() {
     control,
     watch,
     formState: { isSubmitting, errors },
-  } = useForm({
+  } = useForm<IntervalFormInput>({
     resolver: zodResolver(intervalFormSchema),
     defaultValues: {
       intervals: [
@@ -74,12 +94,13 @@ export default function Availability() {
 
   const intervals = watch('intervals')
 
-  function handleSetAvailability(data: IntervalFormProps) {
-    console.log({ data })
+  function handleSetIntervals(data: any) {
+    const formData = data as IntervalFormOutput
+    console.log(formData)
   }
 
-  function handleErrors() {
-    console.log({ errors })
+  function handleErrors(e: any) {
+    console.log(e)
   }
 
   return (
@@ -98,7 +119,7 @@ export default function Availability() {
         </Header>
         <AvailabilityBox
           as="form"
-          onSubmit={handleSubmit(handleSetAvailability, handleErrors)}
+          onSubmit={handleSubmit(handleSetIntervals, handleErrors)}
         >
           <AvailabilityContainer>
             {fields.map((field, i) => {
