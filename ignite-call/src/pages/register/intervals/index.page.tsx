@@ -11,11 +11,11 @@ import {
 import { ArrowRight } from 'phosphor-react'
 
 import {
-  AvailabilityBox,
-  AvailabilityContainer,
-  AvailabilityDay,
-  AvailabilityInputs,
-  AvailabilityItem,
+  IntervalBox,
+  IntervalContainer,
+  IntervalDay,
+  IntervalInputs,
+  IntervalItem,
   FormErrors,
 } from './styles'
 import { Container, Header } from '../styles'
@@ -24,6 +24,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { getWeekDays } from '../../../utils/get-week-days'
 import { convertTimeStringToMinutes } from '../../../utils/convert-timeString-to-minutes'
+import { api } from '../../../lib/axios'
 
 const intervalFormSchema = z.object({
   intervals: z
@@ -63,7 +64,7 @@ const intervalFormSchema = z.object({
 type IntervalFormInput = z.input<typeof intervalFormSchema>
 type IntervalFormOutput = z.output<typeof intervalFormSchema>
 
-export default function Availability() {
+export default function Intervals() {
   const {
     register,
     handleSubmit,
@@ -94,9 +95,15 @@ export default function Availability() {
 
   const intervals = watch('intervals')
 
-  function handleSetIntervals(data: any) {
-    const formData = data as IntervalFormOutput
-    console.log(formData)
+  async function handleSetIntervals(data: any) {
+    try {
+      const { intervals } = data as IntervalFormOutput
+      await api.post('users/intervals', {
+        intervals,
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   function handleErrors(e: any) {
@@ -117,15 +124,15 @@ export default function Availability() {
           </Text>
           <MultiStep currentStep={3} size={4} />
         </Header>
-        <AvailabilityBox
+        <IntervalBox
           as="form"
           onSubmit={handleSubmit(handleSetIntervals, handleErrors)}
         >
-          <AvailabilityContainer>
+          <IntervalContainer>
             {fields.map((field, i) => {
               return (
-                <AvailabilityItem key={field.id}>
-                  <AvailabilityDay>
+                <IntervalItem key={field.id}>
+                  <IntervalDay>
                     <Controller
                       name={`intervals.${field.weekDay}.enabled`}
                       control={control}
@@ -139,8 +146,8 @@ export default function Availability() {
                       )}
                     />
                     <Text size="sm">{weekDay[field.weekDay]}</Text>
-                  </AvailabilityDay>
-                  <AvailabilityInputs>
+                  </IntervalDay>
+                  <IntervalInputs>
                     <TextInput
                       size="sm"
                       type="time"
@@ -155,11 +162,11 @@ export default function Availability() {
                       disabled={intervals[i].enabled === false}
                       {...register(`intervals.${i}.endTime`)}
                     />
-                  </AvailabilityInputs>
-                </AvailabilityItem>
+                  </IntervalInputs>
+                </IntervalItem>
               )
             })}
-          </AvailabilityContainer>
+          </IntervalContainer>
           {errors.intervals && (
             <FormErrors size="sm">{errors.intervals.message}</FormErrors>
           )}
@@ -167,7 +174,7 @@ export default function Availability() {
             Próximo Passo
             <ArrowRight />
           </Button>
-        </AvailabilityBox>
+        </IntervalBox>
       </Container>
     </>
   )

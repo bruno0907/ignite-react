@@ -1,18 +1,18 @@
 import { Box, styled, Text } from '@ignite-ui/react'
 
-export const AvailabilityBox = styled(Box, {
+export const IntervalBox = styled(Box, {
   marginTop: '$6',
   display: 'flex',
   flexDirection: 'column',
 })
 
-export const AvailabilityContainer = styled('div', {
+export const IntervalContainer = styled('div', {
   border: 'solid 1px $gray600',
   borderRadius: '$md',
   marginBottom: '$4',
 })
 
-export const AvailabilityItem = styled('div', {
+export const IntervalItem = styled('div', {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -23,13 +23,13 @@ export const AvailabilityItem = styled('div', {
   },
 })
 
-export const AvailabilityDay = styled('div', {
+export const IntervalDay = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$3',
 })
 
-export const AvailabilityInputs = styled('div', {
+export const IntervalInputs = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '$2',

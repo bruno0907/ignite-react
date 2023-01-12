@@ -11,8 +11,6 @@ export default function ConnectCalendar() {
   const router = useRouter()
   const session = useSession()
 
-  console.log(session)
-
   const hasAuthError = !!router.query.error
   const isAuthenticated = session.status === 'authenticated'
 
@@ -20,8 +18,8 @@ export default function ConnectCalendar() {
     await signIn('google')
   }
 
-  function handleNextStep() {
-    console.log(session)
+  async function handleNextStep() {
+    await router.push('/register/intervals')
   }
 
   return (

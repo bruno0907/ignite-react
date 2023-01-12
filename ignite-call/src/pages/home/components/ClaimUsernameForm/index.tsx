@@ -32,19 +32,11 @@ export function ClaimUsernameForm() {
 
   async function handleClaimUsernameSubmit(data: ClaimUsernameProps) {
     const { username } = data
-    return new Promise((resolve, reject) => {
-      resolve(
-        setTimeout(
-          () =>
-            router.push({
-              pathname: '/register',
-              query: {
-                username,
-              },
-            }),
-          1250,
-        ),
-      )
+    await router.push({
+      pathname: '/register',
+      query: {
+        username,
+      },
     })
   }
 
