@@ -1,4 +1,11 @@
+import { GetServerSideProps } from 'next'
+import { unstable_getServerSession as getServerSession } from 'next-auth'
+import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
+import { useSession } from 'next-auth/react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+
 import {
   Avatar,
   Button,
@@ -7,26 +14,23 @@ import {
   Text,
   TextArea,
 } from '@ignite-ui/react'
-import { GetServerSideProps } from 'next'
-import { unstable_getServerSession as getServerSession } from 'next-auth'
-import { useSession } from 'next-auth/react'
-import { ArrowLeft } from 'phosphor-react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
-import { Container, Header } from '../styles'
 
+import { ArrowRight } from 'phosphor-react'
+
+import { Container, Header } from '../styles'
 import { FormAnnotation, ProfileBox } from './styles'
+import { api } from '../../../lib/axios'
+import { useRouter } from 'next/router'
 
 const updateProfileSchema = z.object({
   bio: z.string(),
-  avatar: z.string(),
 })
 
 type UpdateProfileFormProps = z.infer<typeof updateProfileSchema>
 
 export default function UpdateProfile() {
   const session = useSession()
+  const router = useRouter()
 
   const {
     register,
@@ -37,10 +41,16 @@ export default function UpdateProfile() {
   })
 
   async function handleUpdateProfile(data: UpdateProfileFormProps) {
-    console.log({ data })
-  }
+    try {
+      await api.post('/users/profile', {
+        bio: data.bio,
+      })
 
-  console.log(session)
+      await router.push(`/schedule/${session.data?.user.username}`)
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   return (
     <Container>
@@ -67,7 +77,7 @@ export default function UpdateProfile() {
         </label>
         <Button disabled={isSubmitting}>
           Finalizar
-          <ArrowLeft />
+          <ArrowRight />
         </Button>
       </ProfileBox>
     </Container>
