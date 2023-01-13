@@ -1,4 +1,13 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { Container, Header } from '../styles'
+import { useForm, useFieldArray, Controller } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { getWeekDays } from '../../../utils/get-week-days'
+import { convertTimeStringToMinutes } from '../../../utils/convert-timeString-to-minutes'
+import { api } from '../../../lib/axios'
+
 import {
   Button,
   Checkbox,
@@ -8,8 +17,6 @@ import {
   TextInput,
 } from '@ignite-ui/react'
 
-import { ArrowRight } from 'phosphor-react'
-
 import {
   IntervalBox,
   IntervalContainer,
@@ -18,13 +25,8 @@ import {
   IntervalItem,
   FormErrors,
 } from './styles'
-import { Container, Header } from '../styles'
-import { useForm, useFieldArray, Controller } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { getWeekDays } from '../../../utils/get-week-days'
-import { convertTimeStringToMinutes } from '../../../utils/convert-timeString-to-minutes'
-import { api } from '../../../lib/axios'
+
+import { ArrowRight } from 'phosphor-react'
 
 const intervalFormSchema = z.object({
   intervals: z
@@ -65,6 +67,8 @@ type IntervalFormInput = z.input<typeof intervalFormSchema>
 type IntervalFormOutput = z.output<typeof intervalFormSchema>
 
 export default function Intervals() {
+  const router = useRouter()
+
   const {
     register,
     handleSubmit,
@@ -101,6 +105,7 @@ export default function Intervals() {
       await api.post('users/intervals', {
         intervals,
       })
+      await router.push('/register/update-profile')
     } catch (error) {
       console.log(error)
     }
