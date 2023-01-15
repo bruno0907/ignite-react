@@ -53,9 +53,9 @@ export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
       <CalendarBody>
         <thead>
           <tr>
-            {weekDays.map((day) => (
-              <th key={day}>
-                <Text>{day}.</Text>
+            {weekDays.map((weekDay) => (
+              <th key={weekDay}>
+                <Text>{weekDay}.</Text>
               </th>
             ))}
           </tr>
