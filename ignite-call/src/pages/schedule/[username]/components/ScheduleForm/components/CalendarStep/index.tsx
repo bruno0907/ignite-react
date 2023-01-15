@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Text } from '@ignite-ui/react'
 import { Calendar } from '../../../../../../../components/Calendar'
 import {
@@ -9,13 +10,13 @@ import {
 } from './styles'
 
 export function CalendarStep() {
-  const isDaySelected = false
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
 
   return (
-    <Container isTimePickerOpen={isDaySelected}>
-      <Calendar />
+    <Container isTimePickerOpen={!!selectedDate}>
+      <Calendar selectedDate={selectedDate} onSelectDate={setSelectedDate} />
 
-      {isDaySelected && (
+      {selectedDate && (
         <TimePicker>
           <TimePickerHeader>
             Sábado, <span>14 de janeiro</span>

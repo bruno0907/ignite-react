@@ -1,22 +1,19 @@
 import { useMemo } from 'react'
 import { Dayjs } from 'dayjs'
 
-interface CalendarDayProps {
-  day: Dayjs
-  disabled: boolean
-}
-interface CalendarWeeksProps {
+interface CalendarWeek {
   week: number
-  days: CalendarDayProps[]
+  days: Array<{
+    date: Dayjs
+    disabled: boolean
+  }>
 }
+
+type CalendarWeeks = CalendarWeek[]
 
 export function useCalendar(
   currentDate: Dayjs,
-): [
-  currentMonth: string,
-  currentYear: string,
-  calendarWeek: CalendarWeeksProps[],
-] {
+): [currentMonth: string, currentYear: string, calendarWeek: CalendarWeeks] {
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
 
@@ -25,14 +22,20 @@ export function useCalendar(
       length: currentDate.daysInMonth(),
     })
       .map((_, i) => currentDate.set('date', i + 1))
-      .map((day) => ({ day, disabled: false }))
+      .map((date) => {
+        const isPastDate = date.endOf('day').isBefore(new Date())
+        return {
+          date,
+          disabled: isPastDate,
+        }
+      })
 
     const firstWeekDay = currentDate.get('day')
 
     const previousMonthFillArray = Array.from({ length: firstWeekDay })
       .map((_, i) => currentDate.subtract(i + 1, 'day'))
       .reverse()
-      .map((day) => ({ day, disabled: true }))
+      .map((date) => ({ date, disabled: true }))
 
     const lastDayInCurrentMonth = currentDate.set(
       'date',
@@ -44,7 +47,7 @@ export function useCalendar(
       length: 7 - (lastWeekDay + 1),
     })
       .map((_, i) => lastDayInCurrentMonth.add(i + 1, 'day'))
-      .map((day) => ({ day, disabled: true }))
+      .map((date) => ({ date, disabled: true }))
 
     const calendarDays = [
       ...previousMonthFillArray,
@@ -52,16 +55,15 @@ export function useCalendar(
       ...nextMonthFillArray,
     ]
 
-    const calendarWeeks = calendarDays.reduce<CalendarWeeksProps[]>(
+    const calendarWeeks = calendarDays.reduce<CalendarWeeks>(
       (weeks, _, i, original) => {
         const isNewWeek = i % 7 === 0
 
         if (isNewWeek) {
-          const newWeek = {
+          weeks.push({
             week: i / 7 + 1,
             days: original.slice(i, i + 7),
-          }
-          weeks.push(newWeek)
+          })
         }
         return weeks
       },

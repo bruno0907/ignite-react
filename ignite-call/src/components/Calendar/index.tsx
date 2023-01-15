@@ -13,7 +13,12 @@ import {
   CalendarTitle,
 } from './styles'
 
-export function Calendar() {
+interface CalendarProps {
+  selectedDate?: Date | null
+  onSelectDate: (date: Date) => void
+}
+
+export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => dayjs().set('date', 1))
 
   const [currentMonth, currentYear, calendarWeeks] = useCalendar(currentDate)
@@ -59,11 +64,14 @@ export function Calendar() {
           {calendarWeeks.map(({ week, days }) => {
             return (
               <tr key={week}>
-                {days.map(({ day, disabled }) => {
+                {days.map(({ date, disabled }) => {
                   return (
-                    <td key={day.date()}>
-                      <CalendarDay disabled={disabled}>
-                        {day.date()}
+                    <td key={date.date()}>
+                      <CalendarDay
+                        disabled={disabled}
+                        onClick={() => onSelectDate(date.toDate())}
+                      >
+                        {date.date()}
                       </CalendarDay>
                     </td>
                   )
