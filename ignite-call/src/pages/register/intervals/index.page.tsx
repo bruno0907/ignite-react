@@ -102,7 +102,7 @@ export default function Intervals() {
   async function handleSetIntervals(data: any) {
     try {
       const { intervals } = data as IntervalFormOutput
-      await api.put('users/intervals', {
+      await api.post('users/intervals', {
         intervals,
       })
       await router.push('/register/update-profile')
