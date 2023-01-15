@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { Avatar, Heading, Text } from '@ignite-ui/react'
 import { Container, UserHeader } from './styles'
 import { prisma } from '../../../lib/prima'
+import { ScheduleForm } from './components/ScheduleForm'
 
 interface ScheduleProps {
   user: {
@@ -23,6 +24,7 @@ export default function Schedule({ user }: ScheduleProps) {
         <Heading>{user.fullname}</Heading>
         <Text>{user.bio}</Text>
       </UserHeader>
+      <ScheduleForm />
     </Container>
   )
 }
