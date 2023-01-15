@@ -13,7 +13,6 @@ interface ScheduleProps {
 }
 
 export default function Schedule({ user }: ScheduleProps) {
-  console.log({ user })
   return (
     <Container>
       <UserHeader>
@@ -38,14 +37,11 @@ export const getStaticPaths: GetStaticPaths = () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const username = String(params?.username)
-  console.log(username)
   const user = await prisma.user.findUnique({
     where: {
       username,
     },
   })
-
-  console.log(user)
 
   if (!user) {
     return {
