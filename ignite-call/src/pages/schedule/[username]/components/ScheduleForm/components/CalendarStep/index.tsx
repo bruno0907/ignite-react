@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Text } from '@ignite-ui/react'
 import { api } from '../../../../../../../lib/axios'
@@ -11,6 +11,7 @@ import {
   TimePickerList,
 } from './styles'
 import dayjs from 'dayjs'
+import { useQuery } from '@tanstack/react-query'
 
 interface AvailabilityProps {
   rangeOfIntervals: number[]
@@ -21,27 +22,44 @@ export function CalendarStep() {
   const router = useRouter()
   const username = String(router.query.username)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [availability, setAvailability] = useState<AvailabilityProps | null>(
-    null,
-  )
 
   const weekDay = selectedDate ? dayjs(selectedDate).format('dddd') : null
   const describedDate = selectedDate
     ? dayjs(selectedDate).format('DD[ de ]MMMM')
     : null
 
-  useEffect(() => {
-    if (!selectedDate) return
+  const selectedDateQuery = selectedDate
+    ? dayjs(selectedDate).format('YYYY-MM-DD')
+    : null
 
-    api
-      .get(`/users/${username}/availability`, {
+  const { data: availability } = useQuery<AvailabilityProps>(
+    ['', selectedDateQuery],
+    async () => {
+      const response = await api.get(`/users/${username}/availability`, {
         params: {
           date: dayjs(selectedDate).format('YYYY-MM-DD'),
         },
       })
-      .then(({ data }) => setAvailability(data))
-      .catch((e) => console.error(e))
-  }, [selectedDate, username])
+
+      return response.data
+    },
+    {
+      enabled: !!selectedDate,
+    },
+  )
+
+  // useEffect(() => {
+  //   if (!selectedDate) return
+
+  //   api
+  //     .get(`/users/${username}/availability`, {
+  //       params: {
+  //         date: dayjs(selectedDate).format('YYYY-MM-DD'),
+  //       },
+  //     })
+  //     .then(({ data }) => setAvailability(data))
+  //     .catch((e) => console.error(e))
+  // }, [selectedDate, username])
 
   return (
     <Container isTimePickerOpen={!!selectedDate}>
