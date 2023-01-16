@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Text } from '@ignite-ui/react'
-import { api } from '../../../../../../../lib/axios'
 import { Calendar } from '../../../../../../../components/Calendar'
+import { useAvailability } from '../../../../../../../hooks/useAvailability'
 import {
   Container,
   TimePicker,
@@ -11,12 +11,6 @@ import {
   TimePickerList,
 } from './styles'
 import dayjs from 'dayjs'
-import { useQuery } from '@tanstack/react-query'
-
-interface AvailabilityProps {
-  rangeOfIntervals: number[]
-  availableIntervals: number[]
-}
 
 export function CalendarStep() {
   const router = useRouter()
@@ -28,38 +22,10 @@ export function CalendarStep() {
     ? dayjs(selectedDate).format('DD[ de ]MMMM')
     : null
 
-  const selectedDateQuery = selectedDate
-    ? dayjs(selectedDate).format('YYYY-MM-DD')
-    : null
-
-  const { data: availability } = useQuery<AvailabilityProps>(
-    ['', selectedDateQuery],
-    async () => {
-      const response = await api.get(`/users/${username}/availability`, {
-        params: {
-          date: dayjs(selectedDate).format('YYYY-MM-DD'),
-        },
-      })
-
-      return response.data
-    },
-    {
-      enabled: !!selectedDate,
-    },
-  )
-
-  // useEffect(() => {
-  //   if (!selectedDate) return
-
-  //   api
-  //     .get(`/users/${username}/availability`, {
-  //       params: {
-  //         date: dayjs(selectedDate).format('YYYY-MM-DD'),
-  //       },
-  //     })
-  //     .then(({ data }) => setAvailability(data))
-  //     .catch((e) => console.error(e))
-  // }, [selectedDate, username])
+  const { data: availability } = useAvailability({
+    username,
+    selectedDate,
+  })
 
   return (
     <Container isTimePickerOpen={!!selectedDate}>
