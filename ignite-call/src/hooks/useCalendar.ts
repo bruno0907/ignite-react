@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 import { Dayjs } from 'dayjs'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../lib/axios'
 
 interface CalendarWeek {
   week: number
@@ -11,11 +13,39 @@ interface CalendarWeek {
 
 type CalendarWeeks = CalendarWeek[]
 
-export function useCalendar(
-  currentDate: Dayjs,
-): [currentMonth: string, currentYear: string, calendarWeek: CalendarWeeks] {
+interface BlockedDatesProps {
+  blockedWeekDays: number[]
+}
+
+interface UseCalendarProps {
+  currentDate: Dayjs
+  username: string
+}
+
+export function useCalendar({
+  currentDate,
+  username,
+}: UseCalendarProps): [
+  currentMonth: string,
+  currentYear: string,
+  calendarWeek: CalendarWeeks,
+] {
   const currentMonth = currentDate.format('MMMM')
   const currentYear = currentDate.format('YYYY')
+
+  const { data: blockedDates } = useQuery<BlockedDatesProps>(
+    ['blocked-dates', currentDate.get('year'), currentDate.get('month')],
+    async () => {
+      const response = await api.get(`/users/${username}/blocked-dates`, {
+        params: {
+          year: currentDate.get('year'),
+          month: currentDate.get('month'),
+        },
+      })
+
+      return response.data
+    },
+  )
 
   const calendarWeeks = useMemo(() => {
     const daysInMonthArray = Array.from({
@@ -24,9 +54,11 @@ export function useCalendar(
       .map((_, i) => currentDate.set('date', i + 1))
       .map((date) => {
         const isPastDate = date.endOf('day').isBefore(new Date())
+        const isDateBlocked =
+          blockedDates?.blockedWeekDays.includes(date.get('day')) ?? false
         return {
           date,
-          disabled: isPastDate,
+          disabled: isPastDate || isDateBlocked,
         }
       })
 
@@ -71,7 +103,7 @@ export function useCalendar(
     )
 
     return calendarWeeks
-  }, [currentDate])
+  }, [currentDate, blockedDates])
 
   return [currentMonth, currentYear, calendarWeeks]
 }

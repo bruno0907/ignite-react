@@ -1,5 +1,6 @@
 import { Text } from '@ignite-ui/react'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
 import { CaretLeft, CaretRight } from 'phosphor-react'
 import { useState } from 'react'
 import { useCalendar } from '../../hooks/useCalendar'
@@ -20,8 +21,12 @@ interface CalendarProps {
 
 export function Calendar({ selectedDate, onSelectDate }: CalendarProps) {
   const [currentDate, setCurrentDate] = useState(() => dayjs().set('date', 1))
-
-  const [currentMonth, currentYear, calendarWeeks] = useCalendar(currentDate)
+  const router = useRouter()
+  const username = String(router.query.username)
+  const [currentMonth, currentYear, calendarWeeks] = useCalendar({
+    currentDate,
+    username,
+  })
 
   function handlePreviousMonth() {
     const previousMonth = currentDate.subtract(1, 'month')
