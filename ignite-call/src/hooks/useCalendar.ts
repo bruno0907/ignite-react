@@ -48,14 +48,18 @@ export function useCalendar({
   )
 
   const calendarWeeks = useMemo(() => {
+    if (!blockedDates) return []
+
     const daysInMonthArray = Array.from({
       length: currentDate.daysInMonth(),
     })
       .map((_, i) => currentDate.set('date', i + 1))
       .map((date) => {
         const isPastDate = date.endOf('day').isBefore(new Date())
-        const isDateBlocked =
-          blockedDates?.blockedWeekDays.includes(date.get('day')) ?? false
+        const isDateBlocked = blockedDates.blockedWeekDays.includes(
+          date.get('day'),
+        )
+
         return {
           date,
           disabled: isPastDate || isDateBlocked,

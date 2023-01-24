@@ -34,6 +34,11 @@ export const TimePicker = styled('div', {
   right: 0,
   width: 280,
 
+  '@media(max-width: 900px)': {
+    position: 'unset',
+    width: 'unset',
+  },
+
   '&::-webkit-scrollbar': {
     width: '$2',
   },
