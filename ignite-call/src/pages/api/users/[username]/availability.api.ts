@@ -74,9 +74,15 @@ export default async function handler(
   })
 
   const availableIntervals = rangeOfIntervals.filter((interval) => {
-    return !blockedIntervals.some(
+    const isTimeBlocked = blockedIntervals.some(
       (blocked) => blocked.date.getHours() === interval,
     )
+
+    const isTimeInPast = referenceDate
+      .set('hour', interval)
+      .isBefore(new Date())
+
+    return !isTimeBlocked && !isTimeInPast
   })
 
   return res.json({ rangeOfIntervals, availableIntervals })
