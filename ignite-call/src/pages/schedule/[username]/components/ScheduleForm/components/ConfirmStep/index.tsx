@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button, Text, TextArea, TextInput } from '@ignite-ui/react'
 import dayjs from 'dayjs'
+import { useRouter } from 'next/router'
 import { CalendarBlank, Clock } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
+import { api } from '../../../../../../../lib/axios'
 import { ConfirmForm, FormActions, FormHeader, FormError } from './styles'
 
 const confirmStepSchema = z.object({
@@ -32,9 +34,24 @@ export function ConfirmStep({
   } = useForm<ConfirmStepFormProps>({
     resolver: zodResolver(confirmStepSchema),
   })
+  const router = useRouter()
+  const username = String(router.query.username)
 
-  function handleConfirmScheduling(data: ConfirmStepFormProps) {
-    console.log(data)
+  async function handleConfirmScheduling(data: ConfirmStepFormProps) {
+    try {
+      const { name, email, observations } = data
+
+      await api.post(`/users/${username}/schedule`, {
+        name,
+        email,
+        observations,
+        date: schedulingDate,
+      })
+
+      onCancelScheduling()
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const describedDate = schedulingDate
