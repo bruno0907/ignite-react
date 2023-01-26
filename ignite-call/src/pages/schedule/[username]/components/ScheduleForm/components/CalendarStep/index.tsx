@@ -12,7 +12,11 @@ import {
 } from './styles'
 import dayjs from 'dayjs'
 
-export function CalendarStep() {
+interface CalendarStepProps {
+  onSelectDateTime: (date: Date) => void
+}
+
+export function CalendarStep({ onSelectDateTime }: CalendarStepProps) {
   const router = useRouter()
   const username = String(router.query.username)
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
@@ -26,6 +30,15 @@ export function CalendarStep() {
     username,
     selectedDate,
   })
+
+  function handleSelectTime(hour: number) {
+    const dateWithTime = dayjs(selectedDate)
+      .set('hour', hour)
+      .startOf('hour')
+      .toDate()
+
+    onSelectDateTime(dateWithTime)
+  }
 
   return (
     <Container isTimePickerOpen={!!selectedDate}>
@@ -41,7 +54,11 @@ export function CalendarStep() {
               const isDisabled =
                 !availability.availableIntervals.includes(interval)
               return (
-                <TimePickerItem key={interval} disabled={isDisabled}>
+                <TimePickerItem
+                  key={interval}
+                  disabled={isDisabled}
+                  onClick={() => handleSelectTime(interval)}
+                >
                   <Text>{interval}:00h</Text>
                 </TimePickerItem>
               )
