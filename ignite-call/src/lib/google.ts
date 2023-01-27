@@ -65,4 +65,6 @@ export async function getGoogleOAuthtoken(userId: string) {
 
     return auth
   }
+
+  return auth
 }

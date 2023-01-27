@@ -57,22 +57,18 @@ export default async function handler(
     })
   }
 
-  const scheduling = await prisma.scheduling.create({
-    data: {
-      date: schedulingDate.toDate(),
-      name,
-      email,
-      observations,
-      user_id: user.id,
-    },
-  })
+  const auth = await getGoogleOAuthtoken(user.id)
+
+  if (!auth) {
+    return res.status(400).json({
+      message: 'Google Auth Error.',
+    })
+  }
 
   const calendar = google.calendar({
     version: 'v3',
-    auth: await getGoogleOAuthtoken(user.id),
+    auth,
   })
-
-  console.log(calendar)
 
   await calendar.events.insert({
     calendarId: 'primary',
@@ -89,12 +85,22 @@ export default async function handler(
       attendees: [{ email, displayName: name }],
       conferenceData: {
         createRequest: {
-          requestId: scheduling.id,
+          requestId: `${email}@${date}`,
           conferenceSolutionKey: {
             type: 'hangoutsMeet',
           },
         },
       },
+    },
+  })
+
+  await prisma.scheduling.create({
+    data: {
+      date: schedulingDate.toDate(),
+      name,
+      email,
+      observations,
+      user_id: user.id,
     },
   })
 
