@@ -1,6 +1,5 @@
-import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { Container, Header } from '../styles'
+import { NextSeo } from 'next-seo'
 import { useForm, useFieldArray, Controller } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -16,6 +15,8 @@ import {
   Text,
   TextInput,
 } from '@ignite-ui/react'
+
+import { Container, Header } from '../styles'
 
 import {
   IntervalBox,
@@ -117,9 +118,7 @@ export default function Intervals() {
 
   return (
     <>
-      <Head>
-        <title>Disponibilidade | Ignite Call</title>
-      </Head>
+      <NextSeo title="Selecione sua disponibilidade | Ignite Call" noindex />
       <Container>
         <Header>
           <Heading as="strong">Quase lá</Heading>

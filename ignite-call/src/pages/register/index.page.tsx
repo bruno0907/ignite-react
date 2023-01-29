@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import { NextSeo } from 'next-seo'
 import { Button, Heading, Text, MultiStep, TextInput } from '@ignite-ui/react'
 import { ArrowRight } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
@@ -63,9 +63,7 @@ export default function Register() {
 
   return (
     <>
-      <Head>
-        <title>Registre-se | Ignite Call</title>
-      </Head>
+      <NextSeo title="Crie uma conta | Ignite Call" />
       <Container>
         <Header>
           <Heading as="strong">Bem-vindo ao Ignite Call</Heading>

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { unstable_getServerSession as getServerSession } from 'next-auth'
+import { NextSeo } from 'next-seo'
 import { buildNextAuthOptions } from '../../api/auth/[...nextauth].api'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
@@ -53,34 +54,37 @@ export default function UpdateProfile() {
   }
 
   return (
-    <Container>
-      <Header>
-        <Heading>Atualize seu perfil!</Heading>
-        <Text>Por último uma breve descrição e uma foto pro seu perfil.</Text>
-        <MultiStep currentStep={4} size={4} />
-      </Header>
-      <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
-        <label>
-          <Text size="sm">Foto do perfil</Text>
-          <Avatar
-            src={session.data?.user.avatar_url}
-            alt="Foto de perfil do usuário sendo cadastrado"
-          />
-        </label>
+    <>
+      <NextSeo title="Atualize seu perfil | Ignite Call" />
+      <Container>
+        <Header>
+          <Heading>Atualize seu perfil!</Heading>
+          <Text>Por último uma breve descrição e uma foto pro seu perfil.</Text>
+          <MultiStep currentStep={4} size={4} />
+        </Header>
+        <ProfileBox as="form" onSubmit={handleSubmit(handleUpdateProfile)}>
+          <label>
+            <Text size="sm">Foto do perfil</Text>
+            <Avatar
+              src={session.data?.user.avatar_url}
+              alt="Foto de perfil do usuário sendo cadastrado"
+            />
+          </label>
 
-        <label>
-          <Text size="sm">Sobre você</Text>
-          <TextArea {...register('bio')} />
-          <FormAnnotation size="sm">
-            Fale um pouco sobre você. Isto será exibido em sua página pessoal.
-          </FormAnnotation>
-        </label>
-        <Button disabled={isSubmitting}>
-          Finalizar
-          <ArrowRight />
-        </Button>
-      </ProfileBox>
-    </Container>
+          <label>
+            <Text size="sm">Sobre você</Text>
+            <TextArea {...register('bio')} />
+            <FormAnnotation size="sm">
+              Fale um pouco sobre você. Isto será exibido em sua página pessoal.
+            </FormAnnotation>
+          </label>
+          <Button disabled={isSubmitting}>
+            Finalizar
+            <ArrowRight />
+          </Button>
+        </ProfileBox>
+      </Container>
+    </>
   )
 }
 
